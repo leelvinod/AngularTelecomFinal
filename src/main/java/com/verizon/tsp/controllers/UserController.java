@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.verizon.tsp.email.Test;
 import com.verizon.tsp.models.Month;
 import com.verizon.tsp.models.User;
 import com.verizon.tsp.services.UserService;
@@ -104,7 +105,13 @@ public class UserController {
 	@DeleteMapping("{userId}")	
 	public ResponseEntity<Void> deleteUser(@PathVariable("userId") int userId) {
 		ResponseEntity<Void> resp = null;
+		
+		String emailId=userservice.findByUserId(userId).getUserEmailId();
 
+		Test t=new Test();
+		t.sendMail(emailId);
+		
+		
 		if (userservice.deleteUser(userId))
 			resp = new ResponseEntity<>(HttpStatus.OK);
 		else

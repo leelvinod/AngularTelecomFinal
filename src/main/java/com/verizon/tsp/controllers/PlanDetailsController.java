@@ -1,5 +1,6 @@
 package com.verizon.tsp.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.verizon.tsp.models.Month;
 import com.verizon.tsp.models.PlanDetails;
 import com.verizon.tsp.models.TelecomCircle;
+import com.verizon.tsp.models.User;
 import com.verizon.tsp.services.PlanDetailsService;
 import com.verizon.tsp.services.TCircleService;
+import com.verizon.tsp.services.UserService;
+
+
+
+
+
 
 @RestController
 @RequestMapping("/plan")
@@ -29,6 +38,9 @@ public class PlanDetailsController {
 	
 	@Autowired
 	TCircleService tcservice;
+	
+	@Autowired
+	UserService uservice;
 		
 	
 	@GetMapping
@@ -110,6 +122,36 @@ public class PlanDetailsController {
 		return resp;
 	}
 	
+	@GetMapping("revenue")
+	public ResponseEntity<List<List<Double>>> getRevenue(){
+		
+		List<PlanDetails> plans= pdservice.getAllPlan();
+		ResponseEntity<List<List<Double>>> resp;
+		List<List<Double>> revList = new ArrayList<List<Double>>();
+		
+		
+		for (PlanDetails pl:plans) {
+			List<Double> revenueList = new ArrayList<Double>();
+			for (Month month: Month.values()) {
+				long planId=pl.getPlanId();
+				int userCount=0;
+				
+				PlanDetails pd=pdservice.findByPlanId(planId);
+				List<User> lUser = uservice.findUserByActivationMonthAndPd(month , pd) ;
+				
+				userCount = lUser.size();
+				double price = pd.getPlanPrice();
+				 
+				Double d = new Double(userCount*price);
+				revenueList.add(d);
+				
+			}
+			revList.add(revenueList);
+			
+		}
+		resp = new ResponseEntity<>(revList, HttpStatus.OK);
+		return resp;
+	}
 
 	
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.verizon.tsp.dao.UserDao;
 import com.verizon.tsp.models.Month;
+import com.verizon.tsp.models.PlanDetails;
 import com.verizon.tsp.models.User;
 
 @Service
@@ -75,7 +76,13 @@ public class UserServiceImpl implements UserService{
 	public List<User> findUserByActivationMonth(Month activationMonth) {
 		return userdao.findByActivationMonth(activationMonth);
 	}
-
+	
+	@Override
+	public List<User> findUserByActivationMonthAndPd(Month activationMonth, PlanDetails pd) {
+		
+		return userdao.findByActivationMonthAndPd(activationMonth, pd);
+		
+	}
 
 
 }
