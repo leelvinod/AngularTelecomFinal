@@ -41,6 +41,9 @@ public class PlanDetailsController {
 	
 	@Autowired
 	UserService uservice;
+	
+	double d;
+	List<List<Double>> revList =new ArrayList<List<Double>>();
 		
 	
 	@GetMapping
@@ -127,7 +130,7 @@ public class PlanDetailsController {
 		
 		List<PlanDetails> plans= pdservice.getAllPlan();
 		ResponseEntity<List<List<Double>>> resp;
-		List<List<Double>> revList = new ArrayList<List<Double>>();
+		 
 		
 		
 		for (PlanDetails pl:plans) {
@@ -142,7 +145,7 @@ public class PlanDetailsController {
 				userCount = lUser.size();
 				double price = pd.getPlanPrice();
 				 
-				Double d = new Double(userCount*price);
+				d = new Double(userCount*price);
 				revenueList.add(d);
 				
 			}
@@ -151,6 +154,9 @@ public class PlanDetailsController {
 		}
 		resp = new ResponseEntity<>(revList, HttpStatus.OK);
 		return resp;
+	}
+	public List<List<Double>> printRevenue(){
+		return this.revList;
 	}
 
 	
